@@ -51,7 +51,7 @@ class AuthController {
   /**
    * Generate and send a mock 6-digit OTP.
    */
-  static sendOtp(req, res) {
+  static async sendOtp(req, res) {
     try {
       const { email } = req.body;
       if (!email) {
@@ -61,7 +61,7 @@ class AuthController {
       const emailKey = email.toLowerCase().trim();
 
       // Check if user already exists
-      const existingUser = User.findByEmail(emailKey);
+      const existingUser =await  User.findByEmail(emailKey);
       if (existingUser) {
         return res.status(400).json({ error: 'Email is already registered' });
       }
@@ -126,7 +126,7 @@ class AuthController {
         return res.status(400).json({ error: 'Email and password are required' });
       }
 
-      const user = User.findByEmail(email);
+      const user = await User.findByEmail(email);
       if (!user) {
         return res.status(401).json({ error: 'Invalid email or password' });
       }
@@ -165,12 +165,34 @@ class AuthController {
   /**
    * Get the current user profile.
    */
-  static getProfile(req, res) {
-    if (!req.user) {
-      return res.json({ user: null });
+ static async getProfile(req, res) {
+  try {
+    if (!req.user?.id) {
+      return res.json({
+        user: null
+      });
     }
-    return res.json({ user: req.user });
+
+    const user =
+      await User.findById(
+        req.user.id
+      );
+
+    return res.json({
+      user
+    });
+  } catch (error) {
+    console.error(
+      'Get profile error:',
+      error
+    );
+
+    return res.status(500).json({
+      error:
+        'Failed to fetch profile'
+    });
   }
+}
 }
 
 module.exports = AuthController;

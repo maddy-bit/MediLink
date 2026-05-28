@@ -1,73 +1,141 @@
-const Database = require('./Database');
+const db = require('../config/db');
 
 class Booking {
-  static FILENAME = 'bookings.json';
-
   /**
    * Create a new booking entry.
    */
-  static create({ patientId, patientName, hospitalId, hospitalName, service, date, timeSlot }) {
-    const bookings = Database.read(this.FILENAME);
-
+  static async create({
+    patientId,
+    patientName,
+    hospitalId,
+    hospitalName,
+    service,
+    date,
+    timeSlot
+  }) {
     const newBooking = {
-      id: 'book_' + Date.now() + Math.random().toString(36).substring(2, 7),
+      id:
+        'book_' +
+        Date.now() +
+        Math.random().toString(36).substring(2, 7),
+
       patientId,
       patientName,
       hospitalId,
       hospitalName,
       service,
-      date,            // e.g. "2026-05-29"
-      timeSlot,        // e.g. "10:00 AM"
-      paymentStatus: 'Pending', // Pending until simulated transaction is successful
-      amountPaid: 1,   // Token amount of ₹1
+      date,
+      timeSlot,
+      paymentStatus: 'Pending',
+      amountPaid: 1,
       createdAt: new Date().toISOString()
     };
 
-    bookings.push(newBooking);
-    Database.write(this.FILENAME, bookings);
-    return newBooking;
+    const query = `
+      INSERT INTO bookings (
+        id,
+        patient_id,
+        patient_name,
+        hospital_id,
+        hospital_name,
+        service,
+        booking_date,
+        time_slot,
+        payment_status,
+        amount_paid,
+        created_at
+      )
+      VALUES (
+        $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11
+      )
+      RETURNING *
+    `;
+
+    const values = [
+      newBooking.id,
+      newBooking.patientId,
+      newBooking.patientName,
+      newBooking.hospitalId,
+      newBooking.hospitalName,
+      newBooking.service,
+      newBooking.date,
+      newBooking.timeSlot,
+      newBooking.paymentStatus,
+      newBooking.amountPaid,
+      newBooking.createdAt
+    ];
+
+    const result = await db.query(query, values);
+
+    return result.rows[0];
   }
 
   /**
    * Find booking by ID.
    */
-  static findById(id) {
-    const bookings = Database.read(this.FILENAME);
-    return bookings.find(b => b.id === id) || null;
+  static async findById(id) {
+    const query = `
+      SELECT *
+      FROM bookings
+      WHERE id = $1
+      LIMIT 1
+    `;
+
+    const result = await db.query(query, [id]);
+
+    return result.rows[0] || null;
   }
 
   /**
    * Retrieve bookings made by a specific patient.
    */
-  static getByPatient(patientId) {
-    const bookings = Database.read(this.FILENAME);
-    return bookings
-      .filter(b => b.patientId === patientId)
-      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  static async getByPatient(patientId) {
+    const query = `
+      SELECT *
+      FROM bookings
+      WHERE patient_id = $1
+      ORDER BY created_at DESC
+    `;
+
+    const result = await db.query(query, [patientId]);
+
+    return result.rows;
   }
 
   /**
-   * Retrieve bookings made for a specific hospital (for Admin Feed).
+   * Retrieve bookings made for a specific hospital.
    */
-  static getByHospital(hospitalId) {
-    const bookings = Database.read(this.FILENAME);
-    return bookings
-      .filter(b => b.hospitalId === hospitalId)
-      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  static async getByHospital(hospitalId) {
+    const query = `
+      SELECT *
+      FROM bookings
+      WHERE hospital_id = $1
+      ORDER BY created_at DESC
+    `;
+
+    const result = await db.query(query, [hospitalId]);
+
+    return result.rows;
   }
 
   /**
-   * Confirm the booking payment status.
+   * Confirm booking payment status.
    */
-  static confirmPayment(id) {
-    const bookings = Database.read(this.FILENAME);
-    const bookingIndex = bookings.findIndex(b => b.id === id);
-    if (bookingIndex === -1) throw new Error('Booking not found');
+  static async confirmPayment(id) {
+    const query = `
+      UPDATE bookings
+      SET payment_status = 'Confirmed'
+      WHERE id = $1
+      RETURNING *
+    `;
 
-    bookings[bookingIndex].paymentStatus = 'Confirmed';
-    
-    Database.write(this.FILENAME, bookings);
-    return bookings[bookingIndex];
+    const result = await db.query(query, [id]);
+
+    if (result.rows.length === 0) {
+      throw new Error('Booking not found');
+    }
+
+    return result.rows[0];
   }
 }
 

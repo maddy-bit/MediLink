@@ -6,7 +6,7 @@ class BookingController {
    * Create a new booking (patient must be authenticated).
    * Status is initialized to 'Pending' until payment is received.
    */
-  static create(req, res) {
+  static async create(req, res) {
     try {
       const { hospitalId, service, date, timeSlot } = req.body;
       const patientId = req.user.id;
@@ -16,7 +16,7 @@ class BookingController {
         return res.status(400).json({ error: 'All fields (hospitalId, service, date, timeSlot) are required' });
       }
 
-      const hospital = Hospital.findById(hospitalId);
+      const hospital = await Hospital.findById(hospitalId);
       if (!hospital) {
         return res.status(404).json({ error: 'Hospital not found' });
       }
@@ -27,7 +27,7 @@ class BookingController {
         return res.status(400).json({ error: 'Selected medical service is currently unavailable at this hospital' });
       }
 
-      const booking = Booking.create({
+      const booking =await  Booking.create({
         patientId,
         patientName,
         hospitalId,
@@ -47,7 +47,7 @@ class BookingController {
   /**
    * Complete payment simulation of ₹1 token and confirm booking.
    */
-  static confirmPayment(req, res) {
+  static async confirmPayment(req, res) {
     try {
       const { bookingId } = req.body;
 
@@ -55,14 +55,14 @@ class BookingController {
         return res.status(400).json({ error: 'Booking ID is required' });
       }
 
-      const booking = Booking.findById(bookingId);
+      const booking = await Booking.findById(bookingId);
       if (!booking) {
         return res.status(404).json({ error: 'Booking not found' });
       }
 
       // Process simulated transaction of ₹1
       // Updates paymentStatus to 'Confirmed'
-      const updatedBooking = Booking.confirmPayment(bookingId);
+      const updatedBooking =await Booking.confirmPayment(bookingId);
 
       return res.json({ 
         message: 'Payment simulation successful. Booking confirmed!', 
@@ -77,9 +77,9 @@ class BookingController {
   /**
    * Get booking logs for a patient (history).
    */
-  static getPatientHistory(req, res) {
+  static async getPatientHistory(req, res) {
     try {
-      const bookings = Booking.getByPatient(req.user.id);
+      const bookings =await  Booking.getByPatient(req.user.id);
       return res.json({ bookings });
     } catch (error) {
       return res.status(500).json({ error: 'Failed to fetch patient booking history' });
@@ -89,14 +89,14 @@ class BookingController {
   /**
    * Get real-time booking feed for a specific hospital (Admin).
    */
-  static getHospitalFeed(req, res) {
+  static async getHospitalFeed(req, res) {
     try {
       const { hospitalId } = req.params;
       
       // In this demo, if hospitalId is not provided we default to the admin's seeded hospital 'hosp_1'
       const targetHospitalId = hospitalId || 'hosp_1';
       
-      const bookings = Booking.getByHospital(targetHospitalId);
+      const bookings = await Booking.getByHospital(targetHospitalId);
       return res.json({ bookings });
     } catch (error) {
       return res.status(500).json({ error: 'Failed to fetch hospital booking feed' });

@@ -1,57 +1,128 @@
-const Database = require('./Database');
+const db = require('../config/db');
 const Hospital = require('./Hospital');
 
 class Review {
-  static FILENAME = 'reviews.json';
-
   /**
-   * Create a review and trigger update to hospital rating.
+   * Create a review and update hospital rating.
    */
-  static create({ hospitalId, patientName, rating, comment }) {
-    const reviews = Database.read(this.FILENAME);
-
+  static async create({
+    hospitalId,
+    patientName,
+    rating,
+    comment
+  }) {
     const newReview = {
-      id: 'rev_' + Date.now() + Math.random().toString(36).substring(2, 7),
+      id:
+        'rev_' +
+        Date.now() +
+        Math.random().toString(36).substring(2, 7),
+
       hospitalId,
-      patientName: patientName.trim() || 'Anonymous Patient',
-      rating: Math.min(5, Math.max(1, Number(rating))),
+      patientName:
+        patientName.trim() ||
+        'Anonymous Patient',
+
+      rating: Math.min(
+        5,
+        Math.max(1, Number(rating))
+      ),
+
       comment: comment.trim(),
-      createdAt: new Date().toISOString()
+
+      createdAt:
+        new Date().toISOString()
     };
 
-    reviews.push(newReview);
-    Database.write(this.FILENAME, reviews);
+    const query = `
+      INSERT INTO reviews (
+        hospital_id,
+        patient_name,
+        rating,
+        comment,
+        created_at
+      )
+      VALUES ($1,$2,$3,$4,$5)
+      RETURNING *;
+    `;
 
-    // Recompute and update the hospital's cached average rating
-    this.recalculateHospitalRating(hospitalId);
+    const values = [
+      newReview.hospitalId,
+      newReview.patientName,
+      newReview.rating,
+      newReview.comment,
+      newReview.createdAt
+    ];
 
-    return newReview;
+    const result = await db.query(
+      query,
+      values
+    );
+
+    // Recalculate rating
+    await this.recalculateHospitalRating(
+      hospitalId
+    );
+
+    return result.rows[0];
   }
 
   /**
-   * Get all reviews for a hospital, sorted newest first.
+   * Get all reviews for hospital.
    */
-  static getByHospital(hospitalId) {
-    const reviews = Database.read(this.FILENAME);
-    return reviews
-      .filter(r => r.hospitalId === hospitalId)
-      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  static async getByHospital(
+    hospitalId
+  ) {
+    const query = `
+      SELECT *
+      FROM reviews
+      WHERE hospital_id = $1
+      ORDER BY created_at DESC
+    `;
+
+    const result = await db.query(
+      query,
+      [hospitalId]
+    );
+
+    return result.rows;
   }
 
   /**
-   * Calculate average rating and total count, then notify Hospital model.
+   * Recalculate average rating.
    */
-  static recalculateHospitalRating(hospitalId) {
-    const reviews = Database.read(this.FILENAME);
-    const hospitalReviews = reviews.filter(r => r.hospitalId === hospitalId);
-    
-    if (hospitalReviews.length === 0) return;
+  static async recalculateHospitalRating(
+    hospitalId
+  ) {
+    const query = `
+      SELECT
+        COUNT(*) AS total_reviews,
+        AVG(rating) AS average_rating
+      FROM reviews
+      WHERE hospital_id = $1
+    `;
 
-    const totalReviews = hospitalReviews.length;
-    const sumRatings = hospitalReviews.reduce((sum, r) => sum + r.rating, 0);
-    const avgRating = sumRatings / totalReviews;
+    const result = await db.query(
+      query,
+      [hospitalId]
+    );
 
-    Hospital.updateRating(hospitalId, avgRating, totalReviews);
+    const row = result.rows[0];
+
+    const totalReviews =
+      Number(row.total_reviews);
+
+    const avgRating =
+      Number(
+        row.average_rating || 0
+      );
+
+    if (totalReviews === 0) return;
+
+    await Hospital.updateRating(
+      hospitalId,
+      avgRating,
+      totalReviews
+    );
   }
 }
 

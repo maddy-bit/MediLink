@@ -1,84 +1,225 @@
-const Database = require('./Database');
+const db = require('../config/db');
 
 class Hospital {
-  static FILENAME = 'hospitals.json';
-
   /**
    * Get all hospitals.
    */
-  static getAll() {
-    return Database.read(this.FILENAME);
+  static async getAll() {
+    const query = `
+      SELECT *
+      FROM hospitals
+      ORDER BY name ASC
+    `;
+
+    const hospitalsResult = await db.query(query);
+
+    const hospitals = await Promise.all(
+      hospitalsResult.rows.map(async (hospital) => {
+        const servicesResult = await db.query(
+          `
+          SELECT
+            service_name AS name,
+            price,
+            active
+          FROM services
+          WHERE hospital_id = $1
+          `,
+          [hospital.id]
+        );
+
+        return {
+          ...hospital,
+          services: servicesResult.rows
+        };
+      })
+    );
+
+    return hospitals;
   }
 
   /**
    * Find a hospital by ID.
    */
-  static findById(id) {
-    const hospitals = Database.read(this.FILENAME);
-    return hospitals.find(h => h.id === id) || null;
-  }
+  static async findById(id) {
+    const hospitalQuery = `
+      SELECT *
+      FROM hospitals
+      WHERE id = $1
+      LIMIT 1
+    `;
 
-  /**
-   * Search hospitals that offer a specific service and check if that service is active.
-   */
-  static searchByService(serviceName) {
-    const hospitals = Database.read(this.FILENAME);
-    if (!serviceName) return hospitals;
-    
-    const query = serviceName.toLowerCase().trim();
-    return hospitals.filter(h => 
-      h.services.some(s => s.name.toLowerCase().includes(query) && s.active)
+    const hospitalResult = await db.query(
+      hospitalQuery,
+      [id]
     );
+
+    if (hospitalResult.rows.length === 0) {
+      return null;
+    }
+
+    const hospital = hospitalResult.rows[0];
+
+    const servicesQuery = `
+      SELECT
+        service_name AS name,
+        price,
+        active
+      FROM services
+      WHERE hospital_id = $1
+    `;
+
+    const servicesResult = await db.query(
+      servicesQuery,
+      [id]
+    );
+
+    return {
+      ...hospital,
+      services: servicesResult.rows
+    };
   }
 
   /**
-   * Update the price of a service at a hospital.
+   * Search hospitals by service.
    */
-  static updateServicePrice(hospitalId, serviceName, newPrice) {
-    const hospitals = Database.read(this.FILENAME);
-    const hospitalIndex = hospitals.findIndex(h => h.id === hospitalId);
-    if (hospitalIndex === -1) throw new Error('Hospital not found');
+  static async searchByService(serviceName) {
+    if (!serviceName) {
+      return await this.getAll();
+    }
 
-    const hospital = hospitals[hospitalIndex];
-    const service = hospital.services.find(s => s.name.toLowerCase() === serviceName.toLowerCase().trim());
-    if (!service) throw new Error(`Service '${serviceName}' not found in hospital`);
+    const query = `
+      SELECT DISTINCT h.*
+      FROM hospitals h
+      JOIN services s
+      ON h.id = s.hospital_id
+      WHERE
+        LOWER(s.service_name)
+        LIKE LOWER($1)
+      AND s.active = true
+    `;
 
-    service.price = Math.max(0, Number(newPrice));
-    
-    Database.write(this.FILENAME, hospitals);
-    return hospital;
+    const hospitalsResult = await db.query(
+      query,
+      [`%${serviceName.trim()}%`]
+    );
+
+    const hospitals = await Promise.all(
+      hospitalsResult.rows.map(async (hospital) => {
+        const servicesResult = await db.query(
+          `
+          SELECT
+            service_name AS name,
+            price,
+            active
+          FROM services
+          WHERE hospital_id = $1
+          `,
+          [hospital.id]
+        );
+
+        return {
+          ...hospital,
+          services: servicesResult.rows
+        };
+      })
+    );
+
+    return hospitals;
   }
 
   /**
-   * Toggle the active status of a service at a hospital.
+   * Update service price.
    */
-  static toggleServiceActive(hospitalId, serviceName, active) {
-    const hospitals = Database.read(this.FILENAME);
-    const hospitalIndex = hospitals.findIndex(h => h.id === hospitalId);
-    if (hospitalIndex === -1) throw new Error('Hospital not found');
+  static async updateServicePrice(
+    hospitalId,
+    serviceName,
+    newPrice
+  ) {
+    const query = `
+      UPDATE services
+      SET price = $1
+      WHERE hospital_id = $2
+      AND LOWER(service_name)
+      = LOWER($3)
+      RETURNING *
+    `;
 
-    const hospital = hospitals[hospitalIndex];
-    const service = hospital.services.find(s => s.name.toLowerCase() === serviceName.toLowerCase().trim());
-    if (!service) throw new Error(`Service '${serviceName}' not found in hospital`);
+    const result = await db.query(
+      query,
+      [
+        Math.max(0, Number(newPrice)),
+        hospitalId,
+        serviceName.trim()
+      ]
+    );
 
-    service.active = Boolean(active);
-    
-    Database.write(this.FILENAME, hospitals);
-    return hospital;
+    if (result.rows.length === 0) {
+      throw new Error(
+        `Service '${serviceName}' not found in hospital`
+      );
+    }
+
+    return await this.findById(hospitalId);
   }
 
   /**
-   * Update the cached overall rating and total reviews count.
+   * Toggle active status.
    */
-  static updateRating(hospitalId, averageRating, totalReviews) {
-    const hospitals = Database.read(this.FILENAME);
-    const hospitalIndex = hospitals.findIndex(h => h.id === hospitalId);
-    if (hospitalIndex === -1) return;
+  static async toggleServiceActive(
+    hospitalId,
+    serviceName,
+    active
+  ) {
+    const query = `
+      UPDATE services
+      SET active = $1
+      WHERE hospital_id = $2
+      AND LOWER(service_name)
+      = LOWER($3)
+      RETURNING *
+    `;
 
-    hospitals[hospitalIndex].overallRating = Number(Number(averageRating).toFixed(1));
-    hospitals[hospitalIndex].totalReviews = Number(totalReviews);
-    
-    Database.write(this.FILENAME, hospitals);
+    const result = await db.query(
+      query,
+      [
+        Boolean(active),
+        hospitalId,
+        serviceName.trim()
+      ]
+    );
+
+    if (result.rows.length === 0) {
+      throw new Error(
+        `Service '${serviceName}' not found in hospital`
+      );
+    }
+
+    return await this.findById(hospitalId);
+  }
+
+  /**
+   * Update hospital rating.
+   */
+  static async updateRating(
+    hospitalId,
+    averageRating,
+    totalReviews
+  ) {
+    const query = `
+      UPDATE hospitals
+      SET
+        overall_rating = $1,
+        total_reviews = $2
+      WHERE id = $3
+    `;
+
+    await db.query(query, [
+      Number(
+        Number(averageRating).toFixed(1)
+      ),
+      Number(totalReviews),
+      hospitalId
+    ]);
   }
 }
 
