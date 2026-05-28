@@ -1,0 +1,25 @@
+{
+  "name": "medilink",
+  "version": "1.0.0",
+  "description": "MediLink - Healthcare aggregator platform for finding, comparing, and booking medical procedures.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "healthcare",
+    "aggregator",
+    "booking",
+    "medical"
+  ],
+  "author": "MediLink",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^17.4.2",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2"
+  }
+}

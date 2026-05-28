@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book appointment | MediLink</title>
+  <!-- Google Fonts & Custom CSS -->
+  <link rel="stylesheet" href="/css/style.css">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <!-- Dynamic Header -->
+  <header class="header">
+    <div class="container header-container">
+      <a href="/" class="logo">
+        <div class="logo-icon">
+          <i data-lucide="activity"></i>
+        </div>
+        <span>MediLink</span>
+      </a>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/" class="nav-link">Home</a></li>
+          <li><a href="/search?service=Consultation" class="nav-link">Find Clinics</a></li>
+        </ul>
+      </nav>
+      <div class="auth-buttons" id="authNavContainer">
+        <!-- Rendered dynamically by common.js -->
+      </div>
+    </div>
+  </header>
+
+  <!-- Hospital Details Split Layout -->
+  <main class="container" style="padding-bottom: 80px;">
+    <div class="details-layout">
+      
+      <!-- Left Column: Details & Reviews -->
+      <section class="details-content">
+        <div class="hero-tag" style="background: var(--accent-light); color: var(--accent); margin-bottom: 12px;" id="topRatedTag">
+          Top Rated
+        </div>
+        <h1 id="hospitalName" style="font-size: 32px; margin-bottom: 8px;">Hospital Name</h1>
+        
+        <div class="hospital-meta" style="margin-bottom: 24px;">
+          <span style="color: var(--accent); font-weight: 700;">
+            <i data-lucide="star" class="rating-star" style="width: 16px;"></i> <span id="avgRatingTxt">4.9</span> (<span id="totalReviewsTxt">1200</span> Reviews)
+          </span>
+          <span>
+            <i data-lucide="map-pin" style="width: 16px;"></i> <span id="hospitalAddress">Hospital address location...</span>
+          </span>
+        </div>
+
+        <!-- Clinic Gallery -->
+        <div class="gallery-grid">
+          <div class="gallery-main" style="background-image: url('/images/hospital_lobby.png');"></div>
+          <div class="gallery-subs">
+            <div class="gallery-sub" style="background-image: url('/images/hospital_lobby.png'); filter: hue-rotate(45deg);"></div>
+            <div class="gallery-sub" style="background-image: url('/images/hospital_lobby.png'); filter: saturate(0.5);"></div>
+          </div>
+        </div>
+
+        <!-- Narrative Description -->
+        <div class="details-desc">
+          <h3>About the Institution</h3>
+          <p id="hospitalDesc">City General is a multispecialty quaternary care hospital committed to clinical excellence. With over 500 beds and specialized departments for Cardiology, Oncology, and Neurology, we provide surgical precision and compassionate care.</p>
+          
+          <div class="hospital-tags" style="margin-top: 24px; gap: 16px; flex-wrap: wrap;">
+            <div class="hospital-tag" style="padding: 10px 16px; display: flex; align-items: center; gap: 8px;">
+              <i data-lucide="clock" style="width: 16px; color: var(--accent);"></i> 24/7 Emergency
+            </div>
+            <div class="hospital-tag" style="padding: 10px 16px; display: flex; align-items: center; gap: 8px;">
+              <i data-lucide="circle-slash" style="width: 16px; color: var(--accent);"></i> Free Parking
+            </div>
+            <div class="hospital-tag" style="padding: 10px 16px; display: flex; align-items: center; gap: 8px;">
+              <i data-lucide="wifi" style="width: 16px; color: var(--accent);"></i> High Speed WiFi
+            </div>
+            <div class="hospital-tag" style="padding: 10px 16px; display: flex; align-items: center; gap: 8px;">
+              <i data-lucide="droplet" style="width: 16px; color: var(--accent);"></i> Pharmacy
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic Reviews Feed -->
+        <div class="reviews-section">
+          <div class="reviews-header">
+            <h3 class="reviews-title">Patient Experiences</h3>
+            <span style="font-size: 14px; font-weight: 600; color: var(--accent);">Verified reviews</span>
+          </div>
+
+          <!-- Add Review Form -->
+          <div class="review-form-card">
+            <h4>Rate your experience</h4>
+            <!-- Star selector -->
+            <div class="star-rating-selector" id="reviewStarSelector">
+              <button class="star-btn" data-star="1"><i data-lucide="star"></i></button>
+              <button class="star-btn" data-star="2"><i data-lucide="star"></i></button>
+              <button class="star-btn" data-star="3"><i data-lucide="star"></i></button>
+              <button class="star-btn" data-star="4"><i data-lucide="star"></i></button>
+              <button class="star-btn" data-star="5"><i data-lucide="star"></i></button>
+            </div>
+            <textarea class="review-textarea" id="reviewCommentInput" placeholder="Share details of your visit..."></textarea>
+            
+            <div id="reviewAlertBox" class="alert-popup" style="margin-bottom: 12px; font-size: 12px;"></div>
+
+            <div style="display: flex; justify-content: flex-end;">
+              <button class="btn btn-accent" id="btnPostReview">Post Review</button>
+            </div>
+          </div>
+
+          <!-- Feed -->
+          <div class="review-feed" id="reviewsContainer">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Right Column: Sticky Booking Slot Card -->
+      <aside class="booking-widget-panel">
+        <div class="booking-widget-header">
+          <div class="booking-widget-title">Book a Visit</div>
+          <div class="booking-widget-price">
+            ₹<span id="bookingPriceVal">--</span> <span>(Consultation Fee)</span>
+          </div>
+        </div>
+
+        <div id="bookingWidgetAlertBox" class="alert-popup" style="margin-bottom: 12px; font-size: 12px;"></div>
+
+        <!-- Service Picker -->
+        <div class="booking-field">
+          <label class="booking-field-label">Select Medical Procedure</label>
+          <select class="booking-select" id="bookingServiceSelect">
+            <!-- Filled dynamically -->
+          </select>
+        </div>
+
+        <!-- Custom Mini Datepicker -->
+        <div class="booking-field">
+          <label class="booking-field-label">Select Appointment Date</label>
+          <div class="calendar-console">
+            <div class="calendar-header">
+              <button class="calendar-nav-btn" id="prevMonthBtn"><i data-lucide="chevron-left" style="width: 16px;"></i></button>
+              <span class="calendar-month-year" id="monthYearTitle">October 2024</span>
+              <button class="calendar-nav-btn" id="nextMonthBtn"><i data-lucide="chevron-right" style="width: 16px;"></i></button>
+            </div>
+            <div class="calendar-weekdays">
+              <div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div>
+            </div>
+            <div class="calendar-days" id="calendarDaysGrid">
+              <!-- Grid generated via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Available Slots grid bubbles -->
+        <div class="booking-field">
+          <label class="booking-field-label">Available Slots</label>
+          <div class="slots-grid" id="slotsGridContainer">
+            <div class="slot-item" data-slot="09:00 AM">09:00 AM</div>
+            <div class="slot-item" data-slot="09:30 AM">09:30 AM</div>
+            <div class="slot-item" data-slot="10:00 AM">10:00 AM</div>
+            <div class="slot-item" data-slot="10:30 AM">10:30 AM</div>
+            <div class="slot-item" data-slot="11:00 AM">11:00 AM</div>
+            <div class="slot-item" data-slot="11:30 AM">11:30 AM</div>
+          </div>
+        </div>
+
+        <button class="btn btn-accent" id="btnConfirmBooking" style="width: 100%; padding: 14px; margin-top: 10px;">
+          Confirm Booking
+        </button>
+
+        <div class="booking-secure-tag">
+          <i data-lucide="lock" style="width: 12px;"></i> Secure encrypted transaction
+        </div>
+      </aside>
+
+    </div>
+  </main>
+
+  <!-- Simulated Payment Gateway Modal overlay -->
+  <div class="modal-overlay" id="checkoutModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Simulated Payment</h3>
+        <button class="modal-close" id="btnCheckoutClose"><i data-lucide="x"></i></button>
+      </div>
+
+      <div id="checkoutAlertBox" class="alert-popup" style="margin-bottom: 16px;"></div>
+
+      <div id="checkoutFormContent">
+        <div class="checkout-summary-card">
+          <div class="checkout-row">
+            <span>Hospital Name</span>
+            <span class="checkout-row-val" id="checkoutHospName">City General Hospital</span>
+          </div>
+          <div class="checkout-row">
+            <span>Procedure</span>
+            <span class="checkout-row-val" id="checkoutService">General Consultation</span>
+          </div>
+          <div class="checkout-row">
+            <span>Date & Time</span>
+            <span class="checkout-row-val" id="checkoutDateTime">Tomorrow, 10:00 AM</span>
+          </div>
+          <div class="checkout-row">
+            <span>Procedure Cost</span>
+            <span class="checkout-row-val">₹<span id="checkoutProcedureCost">1000</span></span>
+          </div>
+          <div class="checkout-row">
+            <span>Token to Pay Now</span>
+            <span class="checkout-row-val payment-token">₹1.00</span>
+          </div>
+        </div>
+
+        <!-- Dummy Card Fields -->
+        <div class="checkout-field">
+          <label class="booking-field-label">Cardholder Name</label>
+          <input type="text" class="checkout-input" id="cardName" placeholder="John Doe" required value="John Doe">
+        </div>
+        
+        <div class="checkout-field">
+          <label class="booking-field-label">Mock Card Number</label>
+          <input type="text" class="checkout-input" id="cardNumber" placeholder="4111 2222 3333 4444" required value="4111 2222 3333 4444">
+        </div>
+
+        <div class="checkout-grid">
+          <div class="checkout-field">
+            <label class="booking-field-label">Expiry Date</label>
+            <input type="text" class="checkout-input" id="cardExpiry" placeholder="MM/YY" required value="12/28">
+          </div>
+          <div class="checkout-field">
+            <label class="booking-field-label">CVV</label>
+            <input type="password" class="checkout-input" id="cardCvv" placeholder="123" required value="123">
+          </div>
+        </div>
+
+        <button class="btn btn-accent" id="btnPayCheckout" style="width: 100%; padding: 14px; margin-top: 12px;">
+          Pay ₹1.00 & Confirm Booking <i data-lucide="credit-card" style="width: 16px;"></i>
+        </button>
+      </div>
+
+      <!-- Transaction Success Panel (Swapped dynamically) -->
+      <div id="checkoutSuccessContent" style="display: none;">
+        <div class="success-checkout-container">
+          <div class="success-icon-ring">
+            <i data-lucide="check" style="width: 32px; height: 32px;"></i>
+          </div>
+          <h3>Transaction Successful!</h3>
+          <p>Your appointment has been confirmed. A token payment of ₹1 was charged successfully.</p>
+          
+          <div class="checkout-summary-card" style="width: 100%; text-align: left;">
+            <div class="checkout-row">
+              <span>Booking Status</span>
+              <span class="status-pill confirmed" style="font-size: 11px;"><i data-lucide="check" style="width: 10px;"></i> Confirmed</span>
+            </div>
+            <div class="checkout-row">
+              <span>Appointment ID</span>
+              <span class="checkout-row-val" id="successBookingId" style="font-family: monospace; font-weight: 700;">book_1294812</span>
+            </div>
+          </div>
+
+          <button class="btn btn-primary" id="btnSuccessClose" style="width: 100%; padding: 12px;">
+            Close & View History
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom" style="border-top: none; padding-top: 0;">
+        <p>&copy; 2026 MediLink Healthcare. All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="/js/common.js"></script>
+  <script src="/js/hospital.js"></script>
+  <script>
+    // Initialize icons
+    lucide.createIcons();
+  </script>
+</body>
+</html>

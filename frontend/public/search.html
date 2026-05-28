@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clinic Comparison | MediLink</title>
+  <!-- Google Fonts & Custom CSS -->
+  <link rel="stylesheet" href="/css/style.css">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <!-- Dynamic Header -->
+  <header class="header">
+    <div class="container header-container">
+      <a href="/" class="logo">
+        <div class="logo-icon">
+          <i data-lucide="activity"></i>
+        </div>
+        <span>MediLink</span>
+      </a>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/" class="nav-link">Home</a></li>
+          <li><a href="/search?service=Consultation" class="nav-link active">Find Clinics</a></li>
+        </ul>
+      </nav>
+      <div class="auth-buttons" id="authNavContainer">
+        <!-- Rendered dynamically by common.js -->
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Comparison Dash Layout -->
+  <main class="container" style="padding-bottom: 80px;">
+    <div class="search-layout">
+      
+      <!-- Filters Sidebar -->
+      <aside class="filter-panel">
+        <div class="filter-title-bar">
+          <div class="filter-title">
+            <i data-lucide="sliders-horizontal" style="width: 18px;"></i>
+            <span>SORT & FILTER</span>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <h4 class="filter-group-title">Sort By</h4>
+          
+          <label class="filter-option">
+            <input type="radio" name="sortBy" value="price" checked>
+            <span>Price (Low to High)</span>
+          </label>
+          
+          <label class="filter-option">
+            <input type="radio" name="sortBy" value="distance">
+            <span>Distance (Nearest First)</span>
+          </label>
+          
+          <label class="filter-option">
+            <input type="radio" name="sortBy" value="rating">
+            <span>Ratings (Highest First)</span>
+          </label>
+        </div>
+
+        <div class="filter-group">
+          <h4 class="filter-group-title">Available Today</h4>
+          <label class="switch">
+            <input type="checkbox" id="filterAvailableToday">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <!-- Simulated Map -->
+        <div class="map-placeholder-card">
+          <i data-lucide="map" style="width: 32px; height: 32px; color: var(--accent); margin: 0 auto;"></i>
+          <p><strong>Interactive Map View</strong></p>
+          <p>Showing clinic coordinates near your location</p>
+          <button class="btn btn-outline" style="width: 100%; margin-top: 12px; padding: 6px; font-size: 11px;" id="btnViewMap">
+            <i data-lucide="eye" style="width: 12px;"></i> View on Map
+          </button>
+        </div>
+      </aside>
+
+      <!-- Results Section -->
+      <section style="flex: 1;">
+        <div class="results-header">
+          <h2 class="results-count" id="searchHeader">Results for <span id="searchedServiceTxt">Procedure</span></h2>
+          <div class="search-input-group" style="max-width: 300px; padding: 8px 12px;">
+            <i data-lucide="search" style="width: 14px;"></i>
+            <input type="text" id="inlineSearchInput" placeholder="Refine search...">
+          </div>
+        </div>
+
+        <!-- Dynamic Results Feed -->
+        <div id="resultsContainer">
+          <!-- Populated by search.js -->
+          <div class="success-checkout-container" style="padding: 100px 0;">
+            <div style="border: 4px solid var(--gray-200); border-top-color: var(--accent); width: 40px; height: 40px; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+            <p style="margin-top: 16px; color: var(--gray-500);">Searching nearby hospitals...</p>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom" style="border-top: none; padding-top: 0;">
+        <p>&copy; 2026 MediLink Healthcare. All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Spinner Animation -->
+  <style>
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+
+  <!-- Scripts -->
+  <script src="/js/common.js"></script>
+  <script src="/js/search.js"></script>
+  <script>
+    // Initialize icons
+    lucide.createIcons();
+  </script>
+</body>
+</html>

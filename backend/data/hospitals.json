@@ -1,0 +1,114 @@
+[
+  {
+    "id": "hosp_1",
+    "name": "City General Hospital & Research Center",
+    "address": "12/A Medical District, South Delhi, India",
+    "latitude": 28.5562,
+    "longitude": 77.2410,
+    "overallRating": 4.9,
+    "totalReviews": 1240,
+    "imageUrl": "/images/hospital_lobby.png",
+    "services": [
+      { "name": "General Consultation", "price": 1000, "active": true },
+      { "name": "X-ray", "price": 800, "active": true },
+      { "name": "MRI Scan", "price": 6000, "active": true },
+      { "name": "CT Scan", "price": 3500, "active": true },
+      { "name": "Cardiology Consultation", "price": 1200, "active": true },
+      { "name": "Dental Checkup", "price": 600, "active": true },
+      { "name": "Orthopedic Consultation", "price": 1100, "active": true },
+      { "name": "Eye Care Consultation", "price": 700, "active": true },
+      { "name": "Dermatology Consultation", "price": 1300, "active": true }
+    ],
+    "onCallStaff": [
+      { "name": "Dr. Sahil Mehta", "dept": "Main Wing", "status": "LIVE" },
+      { "name": "Dr. Anita Roy", "dept": "Emergency", "status": "LIVE" },
+      { "name": "Dr. Kevin Hart", "dept": "On Break", "status": "AWAY" }
+    ]
+  },
+  {
+    "id": "hosp_2",
+    "name": "St. Mary's Heart & Vascular",
+    "address": "45 Saket Institutional Area, South Delhi, India",
+    "latitude": 28.5284,
+    "longitude": 77.2195,
+    "overallRating": 4.8,
+    "totalReviews": 1102,
+    "imageUrl": "/images/hospital_lobby.png",
+    "services": [
+      { "name": "General Consultation", "price": 1500, "active": true },
+      { "name": "Cardiology Consultation", "price": 2500, "active": true },
+      { "name": "X-ray", "price": 900, "active": true },
+      { "name": "CT Scan", "price": 4000, "active": true },
+      { "name": "MRI Scan", "price": 6500, "active": true },
+      { "name": "Dental Checkup", "price": 800, "active": true },
+      { "name": "Orthopedic Consultation", "price": 1400, "active": true }
+    ],
+    "onCallStaff": [
+      { "name": "Dr. Ramesh Nair", "dept": "Cardiology", "status": "LIVE" },
+      { "name": "Dr. Sarah D'Souza", "dept": "ICU", "status": "LIVE" }
+    ]
+  },
+  {
+    "id": "hosp_3",
+    "name": "Apex Multispecialty Clinic",
+    "address": "Metro Pillar 104, Lajpat Nagar, Delhi, India",
+    "latitude": 28.5684,
+    "longitude": 77.2415,
+    "overallRating": 4.2,
+    "totalReviews": 89,
+    "imageUrl": "/images/hospital_lobby.png",
+    "services": [
+      { "name": "General Consultation", "price": 500, "active": true },
+      { "name": "X-ray", "price": 700, "active": true },
+      { "name": "MRI Scan", "price": 5000, "active": true },
+      { "name": "CT Scan", "price": 3000, "active": true },
+      { "name": "Dental Checkup", "price": 400, "active": true },
+      { "name": "Eye Care Consultation", "price": 500, "active": true },
+      { "name": "Dermatology Consultation", "price": 800, "active": false }
+    ],
+    "onCallStaff": [
+      { "name": "Dr. Vikas Khanna", "dept": "OPD", "status": "LIVE" }
+    ]
+  },
+  {
+    "id": "hosp_4",
+    "name": "City General Cardiology Center",
+    "address": "Nariman Point Road, Mumbai, MH, India",
+    "latitude": 18.9282,
+    "longitude": 72.8224,
+    "overallRating": 4.5,
+    "totalReviews": 240,
+    "imageUrl": "/images/hospital_lobby.png",
+    "services": [
+      { "name": "Cardiology Consultation", "price": 1200, "active": true },
+      { "name": "General Consultation", "price": 900, "active": true },
+      { "name": "X-ray", "price": 1000, "active": true },
+      { "name": "CT Scan", "price": 3800, "active": true },
+      { "name": "MRI Scan", "price": 6000, "active": true }
+    ],
+    "onCallStaff": [
+      { "name": "Dr. Rohit Sharma", "dept": "Cath Lab", "status": "LIVE" },
+      { "name": "Dr. Priya Patel", "dept": "OPD", "status": "LIVE" }
+    ]
+  },
+  {
+    "id": "hosp_5",
+    "name": "Apex Multispecialty Clinic - Mumbai",
+    "address": "LBS Marg, Kurla West, Mumbai, MH, India",
+    "latitude": 19.0734,
+    "longitude": 72.8824,
+    "overallRating": 4.1,
+    "totalReviews": 75,
+    "imageUrl": "/images/hospital_lobby.png",
+    "services": [
+      { "name": "General Consultation", "price": 800, "active": true },
+      { "name": "Cardiology Consultation", "price": 1500, "active": true },
+      { "name": "X-ray", "price": 1100, "active": true },
+      { "name": "MRI Scan", "price": 6200, "active": true },
+      { "name": "Dental Checkup", "price": 500, "active": true }
+    ],
+    "onCallStaff": [
+      { "name": "Dr. Amit Patil", "dept": "Diagnostics", "status": "LIVE" }
+    ]
+  }
+]

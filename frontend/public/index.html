@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MediLink | Find & Book Medical Procedures Near You</title>
+  <!-- Google Fonts & Custom CSS -->
+  <link rel="stylesheet" href="/css/style.css">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <!-- Dynamic Header -->
+  <header class="header">
+    <div class="container header-container">
+      <a href="/" class="logo">
+        <div class="logo-icon">
+          <i data-lucide="activity"></i>
+        </div>
+        <span>MediLink</span>
+      </a>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/" class="nav-link active">Home</a></li>
+          <li><a href="/search?service=Consultation" class="nav-link">Find Clinics</a></li>
+        </ul>
+      </nav>
+      <div class="auth-buttons" id="authNavContainer">
+        <!-- Rendered dynamically by common.js -->
+        <a href="/login" class="btn btn-text">Login</a>
+        <a href="/register" class="btn btn-primary">Sign Up</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container">
+      <div class="hero-tag">
+        <i data-lucide="shield-check" style="width: 14px;"></i> Trusted by 10,000+ Patients
+      </div>
+      <h1 class="hero-title">Find and book medical procedures with <span>confidence.</span></h1>
+      <p class="hero-subtitle">Compare specialties, check availability, and book your next appointment at top-rated clinics in your area.</p>
+
+      <!-- Search Console Box -->
+      <div class="search-console">
+        <div class="search-input-group">
+          <i data-lucide="search"></i>
+          <input type="text" id="procedureInput" placeholder="MRI, X-ray, Cardiology..." list="procedures-datalist">
+          <datalist id="procedures-datalist">
+            <option value="General Consultation"></option>
+            <option value="Cardiology Consultation"></option>
+            <option value="X-ray"></option>
+            <option value="MRI Scan"></option>
+            <option value="CT Scan"></option>
+            <option value="Dental Checkup"></option>
+            <option value="Orthopedic Consultation"></option>
+            <option value="Eye Care Consultation"></option>
+            <option value="Dermatology Consultation"></option>
+          </datalist>
+        </div>
+        
+        <div class="search-input-group">
+          <i data-lucide="map-pin"></i>
+          <input type="text" id="locationInput" placeholder="Your Location" readonly>
+          <button type="button" class="btn-location-ask" id="btnGeolocate">
+            <i data-lucide="navigation" style="width: 12px; display: inline-block;"></i> Allow Location
+          </button>
+        </div>
+
+        <button class="btn btn-accent" id="btnSearch" style="padding: 12px 28px;">
+          Search Available Clinics <i data-lucide="arrow-right" style="width: 16px;"></i>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section class="section section-bg">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">How MediLink Works</h2>
+        <p class="section-subtitle">Simple, transparent care in three easy steps.</p>
+      </div>
+
+      <div class="grid-3">
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">
+            <i data-lucide="search"></i>
+          </div>
+          <h3>Search Procedure</h3>
+          <p>Browse hundreds of medical services from diagnostic imaging to specialist consultations near you.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">
+            <i data-lucide="arrow-left-right"></i>
+          </div>
+          <h3>Compare Rates</h3>
+          <p>View transparent pricing, clinic ratings, and real-time appointment availability side-by-side.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">
+            <i data-lucide="calendar"></i>
+          </div>
+          <h3>Instant Booking</h3>
+          <p>Secure your spot instantly. Receive prep instructions and digital confirmations directly.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Specialties Section -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Top Specialties</h2>
+        <p class="section-subtitle">Access specialized care from certified practitioners across the nation's leading medical networks.</p>
+      </div>
+
+      <div class="grid-6">
+        <div class="specialty-card" data-specialty="Radiology">
+          <div class="specialty-icon"><i data-lucide="scan"></i></div>
+          <span>Radiology</span>
+        </div>
+        <div class="specialty-card" data-specialty="Cardiology">
+          <div class="specialty-icon"><i data-lucide="heart-pulse"></i></div>
+          <span>Cardiology</span>
+        </div>
+        <div class="specialty-card" data-specialty="Eye Care">
+          <div class="specialty-icon"><i data-lucide="eye"></i></div>
+          <span>Eye Care</span>
+        </div>
+        <div class="specialty-card" data-specialty="Orthopedic">
+          <div class="specialty-icon"><i data-lucide="bone"></i></div>
+          <span>Orthopedic</span>
+        </div>
+        <div class="specialty-card" data-specialty="Dental">
+          <div class="specialty-icon"><i data-lucide="smile"></i></div>
+          <span>Dental</span>
+        </div>
+        <div class="specialty-card" data-specialty="Skin Care">
+          <div class="specialty-icon"><i data-lucide="sparkles"></i></div>
+          <span>Skin Care</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trust Protocol Banner -->
+  <section class="section" style="padding-top: 0;">
+    <div class="container">
+      <div class="banner-trust">
+        <div class="banner-content">
+          <h2>Your health is our primary protocol.</h2>
+          <p>Every clinic on MediLink undergoes a rigorous 50-point verification process to ensure they meet modern healthcare standards. We prioritize clinical excellence over marketing.</p>
+          <div class="banner-badges">
+            <div class="banner-badge">
+              <i data-lucide="shield-check"></i> <span>HIPAA Compliant</span>
+            </div>
+            <div class="banner-badge">
+              <i data-lucide="user-check"></i> <span>Board Certified MDs</span>
+            </div>
+          </div>
+        </div>
+        <div class="banner-image" style="background-image: url('/images/hospital_lobby.png');"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="logo" style="color: var(--white);">
+            <div class="logo-icon"><i data-lucide="activity"></i></div>
+            <span>MediLink</span>
+          </div>
+          <p class="footer-desc">Connecting patients with premium healthcare professionals and institutions globally.</p>
+        </div>
+        <div>
+          <h4 class="footer-col-title">Navigation</h4>
+          <ul class="footer-links">
+            <li><a href="/search?service=Consultation">Clinics</a></li>
+            <li><a href="/">Specialties</a></li>
+            <li><a href="#">Emergency Portal</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="footer-col-title">Support</h4>
+          <ul class="footer-links">
+            <li><a href="#">Contact Support</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 MediLink Healthcare. All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <span>Emergency: 911 / 102</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="/js/common.js"></script>
+  <script src="/js/landing.js"></script>
+  <script>
+    // Initialize icons
+    lucide.createIcons();
+  </script>
+</body>
+</html>
